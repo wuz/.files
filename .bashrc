@@ -147,6 +147,9 @@ export PATH="$PATH:$HOME/.rvm/bin"
 
 export DBTUNNELUSER="conlin"
 
+# Add yarn to path
+export PATH="$PATH:$(yarn global bin)"
+
 # tabtab source for yarn package
 # uninstall by removing these lines or running `tabtab uninstall yarn`
 [ -f /home/wuz/.nvm/versions/node/v9.4.0/lib/node_modules/yarn-completions/node_modules/tabtab/.completions/yarn.bash ] && . /home/wuz/.nvm/versions/node/v9.4.0/lib/node_modules/yarn-completions/node_modules/tabtab/.completions/yarn.bash

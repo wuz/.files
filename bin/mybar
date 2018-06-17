@@ -1,0 +1,13 @@
+#!/bin/bash
+run() {
+  while true; do
+    echo "%{s1}%{c} | v:$(exec amixer get Master | grep -E -o "[0-9]+%" | grep -E -o "[0-9]*") | b:$(acpi | cut -d ',' -f 2) | $(diskutil) | $(date +"%_I:%M") | m:$(ismullvad) | %{c}%{s1}"
+    sleep 1
+  done
+}
+
+run | lemonbar \
+  -B "#FF1D1F21" \
+  -F "#FFC5C8C6" \
+  -g x30+10+10
+  wait

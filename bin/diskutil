@@ -1,0 +1,2 @@
+#!/bin/bash
+df -h /dev/mapper/ubuntu--vg-root | grep /dev/mapper | awk '{ print "u:"$3" | t:"$2" | p:"$5 }'

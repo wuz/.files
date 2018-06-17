@@ -1,0 +1,18 @@
+#!/bin/bash
+
+function join_by { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
+
+BACKUP_FILES=$(cat ~/.backuprc)
+
+echo "Backing up:"
+echo "$BACKUP_FILES"
+
+/usr/bin/tarsnap -v -c \
+	-f "$(uname -n)-$(date +%Y-%m-%d_%H-%M-%S)" \
+  --print-stats \
+  --exclude .git \
+  --exclude node_modules \
+  --exclude *.core \
+  --exclude /Users/*/Library/Cache \
+  --exclude /home/*/.gvfs/ \
+  $(join_by " " $BACKUP_FILES)

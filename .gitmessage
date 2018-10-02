@@ -1,0 +1,24 @@
+# [Type]: Subject
+[]:
+
+# Why
+
+# Footer
+
+
+
+# Type should be one of the following:
+# * Feat (new feature)
+# * Fix (bug fix)
+# * Doc (changes to documentation)
+# * Style (change in code format, no logic change)
+# * Refactor (refactoring production code)
+# * Test (adding missing tests, refactoring tests; no production code change)
+# * Chore (updating grunt tasks etc; no production code change)
+# The first line should contain a type and a subject in the imperative tone.
+#     i.e. [Feat]: Add dropdown list to contact select form.
+# In the "Why" section, take a few lines to explain why this change was needed,
+# what code the change effects, and any possible side effects of the change.
+# Use the footer to add useful information like issue tracking id, signature (if working
+# on an open source project, give a relevant identification), and any other relevant information
+# about the project itself.

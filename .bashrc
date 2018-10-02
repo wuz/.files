@@ -53,8 +53,10 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-PS1='\[\033[01;34m\]\w\[\033[00m\]\n▲ '
+# PS1='\[\033[01;34m\]\w\[\033[00m\]\n▲ '
 unset color_prompt force_color_prompt
+
+[ -n "$PS1" ] && source ~/.bash_prompt;
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in

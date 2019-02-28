@@ -103,7 +103,6 @@ pandoc
 pcre
 pcre2
 perl
-phantomjs
 pigz
 pinentry
 pkg-config
@@ -125,10 +124,7 @@ ruby
 ruby-build
 screen
 screenresolution
-sfnt2woff
-sfnt2woff-zopfli
 shellcheck
-skhd
 socat
 speedtest-cli
 spotctl

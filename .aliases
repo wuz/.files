@@ -17,17 +17,13 @@ colorflag="-Gp --color=auto"
 export LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
 fi
 
-alias l="ls -lF ${colorflag}"
-alias ll="ls -al ${colorflag}"
-alias ls="ls ${colorflag}"
-
-alias la="ls -laF ${colorflag}"
+alias l='exa -alFT --header -L 1'
+alias lg='exa -alT -L 1 --header --git'
+alias ll='exa -al'
+alias ls='exa'
 
 # List only directories
-alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
-
-# Always use color output for `ls`
-alias ls="command ls ${colorflag}"
+alias lsd="exa -lF ${colorflag} | grep --color=never '^d'"
 
 # Always enable colored `grep` output
 # Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
@@ -102,9 +98,9 @@ alias town="ssh wuz@tilde.town"
 alias h='function hdi(){ howdoi $* -c -n 5; }; hdi'
 alias g='git'
 
-alias open="xdg-open"
+# alias open="xdg-open"
 
-alias copy="xclip -sel clip"
+# alias copy="xclip -sel clip"
 
 #
 # WORK
@@ -113,3 +109,8 @@ alias copy="xclip -sel clip"
 alias FAKES3='rm -rf /tmp/fakes3 ; mkdir /tmp/fakes3 ; fakes3 server -p 4567 -r /tmp/fakes3 > /dev/null 2> /dev/null &'
 alias ES_DOCKER='docker run --name elasticsearch --restart=always -e ES_JAVA_OPTS="-Xms512m -Xmx512m" -e "http.host=0.0.0.0" -e "transport.host=127.0.0.1" -d -p 9200:9200 elasticsearch:5.6.8-alpine'
 
+alias be="bundle exec"
+
+alias t="todo.sh"
+
+alias te="vim ~/ownCloud/todo/todo.txt";

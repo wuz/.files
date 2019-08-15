@@ -111,6 +111,5 @@ alias copy="xclip -sel clip"
 #
 
 alias FAKES3='rm -rf /tmp/fakes3 ; mkdir /tmp/fakes3 ; fakes3 server -p 4567 -r /tmp/fakes3 > /dev/null 2> /dev/null &'
-alias DEV_REDIS_TUNNEL='ssh -L 6969:dev-rata2.jczmkl.0001.use1.cache.amazonaws.com:6379 conlin@lidr.mimir.cloud'
 alias ES_DOCKER='docker run --name elasticsearch --restart=always -e ES_JAVA_OPTS="-Xms512m -Xmx512m" -e "http.host=0.0.0.0" -e "transport.host=127.0.0.1" -d -p 9200:9200 elasticsearch:5.6.8-alpine'
 

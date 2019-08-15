@@ -1,8 +1,8 @@
 [push]
-  default = simple
+  default = current
 [user]
-	name = Conlin Durbin
-	email = conlin@lessonly.com
+  name = Conlin Durbin
+  email = conlin@lessonly.com
   signingkey = CAA69BFC5EF24C40
 [alias]
   # quick command aliases
@@ -32,13 +32,17 @@
   got = "!f() { CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && git checkout $2 && git pull origin $1 --ff-only && git checkout $CURRENT_BRANCH;  }; f" #git get for another branch
   who = shortlog -n -s --no-merges # who has committed to this project
   cleanup = "!git remote prune origin && git branch -vv | grep ': gone]' | cut -d ' ' -f 3 | xargs -n 1 git branch -D"
-  fco="!f() { git branch -a -vv --color=always | grep -v '/HEAD\\s' | fzf -q "$1" --height=40% --ansi --tac --color=16 --border | sed "s/^..//" | awk '{print $1}' | sed "s_^remotes/[^/]*/__" | xargs git co; }; f"
+  fco="!f() { git branch -a -vv --color=always --format='%(refname)' | sed "s_refs/heads/__" | sed "s_refs/remotes/__" | fzf --query="$@" --height=40% --ansi --tac --color=16 --border | awk '{print $1}' | xargs git co; }; f"
   new = checkout -b
 [commit]
   template = ~/.gitmessage
   gpgsign = true
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+[branch]
+  autosetupmerge=true
+[gpg]
+  program = gpg

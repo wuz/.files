@@ -2,12 +2,12 @@
 if &compatible
   set nocompatible
 endif
-set runtimepath+=~/.config/nvim/plugins/repos/github.com/Shougo/dein.vim
+set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
 
-if dein#load_state('~/.config/nvim/plugins')
-  call dein#begin(expand('~/.config/nvim/plugins'))
+if dein#load_state('~/.cache/dein')
+  call dein#begin(expand('~/.cache/dein'))
 
-  call dein#add('Shougo/dein.vim')
+  call dein#add('/Users/wuz/.cache/dein/repos/github.com/Shougo/dein.vim')
 
   " linting
   call dein#add('w0rp/ale')
@@ -17,6 +17,7 @@ if dein#load_state('~/.config/nvim/plugins')
 
 	" colors
   call dein#add('rafi/awesome-vim-colorschemes')
+  call dein#add('DankNeon/vim')
 
   " display
   call dein#add('nathanaelkane/vim-indent-guides')
@@ -118,7 +119,7 @@ endif
 syntax on
 
 set background=dark
-colorscheme apprentice
+colorscheme dank-neon
 
 highlight VertSplit ctermbg=NONE
 set cursorline
@@ -358,12 +359,17 @@ endif
 " ------------------------------------------------------------ COPY/PASTE
 
 """"" LEADER COPY/CUT/PASTE/REPLACE COMMMANDS
+" copy to system clipboard
 vmap <Leader>y "+y
+" cut to system clipboard
 vmap <Leader>d "+d
-nmap <Leader>p "+p
-nmap <Leader>P "+P
+" paste from system clipboard after cursor
 vmap <Leader>p "+p
+nmap <Leader>p "+p
+" paste from system clipboard before cursor
 vmap <Leader>P "+P
+nmap <Leader>P "+P
+" replace selection in file
 vmap <Leader>r "hy:%s/<C-r>h//gc<left><left><left>
 """""
 

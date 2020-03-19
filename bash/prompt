@@ -1,0 +1,247 @@
+#!/usr/bin/env bash
+
+# Shell prompt from wuz/.files (github.com/wuz/.files)
+
+bold="\[\e[1m\]"
+reset="\[\e[0m\]"
+black="\[\e[30m\]"
+blue="\[\e[34m\]"
+green="\[\e[32m\]"
+cyan="\[\e[36m\]"
+red="\[\e[31m\]"
+yellow="\[\e[33m\]"
+purple="\[\e[35m\]"
+brown="\[\e[33m\]"
+gray="\[\e[37m\]"
+dark_gray="\[\e[90m\]"
+light_blue="\[\e[94m\]"
+light_green="\[\e[92m\]"
+light_cyan="\[\e[96m\]"
+light_red="\[\e[91m\]"
+light_purple="\[\e[95m\]"
+light_yellow="\[\e[93m\]"
+white="\[\e[97m\]"
+
+
+declare -A extensionColors=(
+[nodejs]="\e[92m"
+[ruby]="\e[91m"
+[golang]="\e[34m"
+[python]="\e[93m"
+)
+
+declare -A extensions=(
+[txt]=e
+[styl]=
+[scss]=
+[htm]=
+[html]=
+[slim]=
+[ejs]=
+[css]=
+[less]=
+[md]=
+[markdown]=
+[json]=
+[js]="\ue781"
+[nodejs]="\ue718"
+[jsx]=
+[rb]=""
+[ruby]=""
+[php]=
+[py]=
+[python]=
+[pyc]=
+[pyo]=
+[pyd]=
+[coffee]=
+[mustache]=
+[hbs]=
+[conf]=
+[ini]=
+[yml]=
+[bat]=
+[jpg]=
+[jpeg]=
+[bmp]=
+[png]=
+[gif]=
+[ico]=
+[twig]=
+[cpp]=
+[c++]=
+[cxx]=
+[cc]=
+[cp]=
+[c]=
+[hs]=
+[lhs]=
+[lua]=
+[java]=
+[sh]=
+[fish]=
+[ml]=λ
+[mli]=λ
+[diff]=
+[db]=
+[sql]=
+[dump]=
+[clj]=
+[cljc]=
+[cljs]=
+[edn]=
+[scala]=
+[go]=
+[golang]=
+[dart]=
+[xul]=
+[sln]=
+[suo]=
+[pl]=
+[pm]=
+[t]=
+[rss]=
+[f#]=
+[fsscript]=
+[fsx]=
+[fs]=
+[fsi]=
+[rs]=
+[rlib]=
+[d]=
+[erl]=
+[hrl]=
+[vim]=
+[ai]=
+[psd]=
+[psb]=
+[ts]=
+[jl]=
+)
+
+build_str_for_lang() {
+    local symbol
+    local version
+    local color
+    if [ ${extensions[$1]+$exist_check} ]; then
+      symbol="${extensions[$1]} $2"
+      color="${extensionColors[$1]}"
+    fi
+    echo -e "$color$symbol"
+}
+
+prompt_nodeversion() {
+  # node
+  local nodeVersionFile="$PWD/.nvmrc"
+  local nodeVersionFile2="$PWD/.node-version"
+  if [ -f "$nodeVersionFile" ] || [ -f "$nodeVersionFile2" ]; then
+    build_str_for_lang "nodejs" "$(node -v)"
+  fi
+}
+
+prompt_rubyversion() {
+  # ruby
+  local rubyVersionFile="$PWD/.ruby-version"
+  local gemFile="$PWD/Gemfile"
+  if [ -f "$rubyVersionFile" ] || [ -f "$gemFile" ]; then
+    build_str_for_lang "ruby" "$(ruby -v | awk '{print $2}')"
+  fi
+}
+
+prompt_legacyfile() {
+  echo -e "$(prompt_rubyversion) $(prompt_nodeversion)" | sed 's/ *$//g'
+}
+
+prompt_toolversions() {
+  local exist_check=1
+  local toolVersionFile="$PWD/.tool-versions"
+  if [ ! -f "$toolVersionFile" ]; then
+    prompt_legacyfile
+  else
+    local symbols=""
+    while IFS= read -r line
+    do
+      local lang
+      local version
+
+      lang=$(echo "$line" | awk '{ print $1 }')
+      version=$(echo "$line" | awk '{ print $2 }')
+      symbols+=$(build_str_for_lang "$lang" "$version ")
+    done < "$toolVersionFile"
+    printf "$symbols"
+  fi
+
+}
+
+prompt_git() {
+  local s=""
+  local branchName=''
+
+  # Check if the current directory is in a Git repository.
+  if [ "$(
+    git rev-parse --is-inside-work-tree &>/dev/null
+    echo "${?}"
+    )" == '0' ]; then
+      
+    s="${4}·"
+
+    # check if the current directory is in .git before running git checks
+    if [ "$(git rev-parse --is-inside-git-dir 2>/dev/null)" == 'false' ]; then
+
+      # Ensure the index is up to date.
+      git update-index --really-refresh -q &>/dev/null
+      
+      # Check for unstaged changes.
+      if ! $(git diff --quiet --ignore-submodules --cached); then
+        s="${5}±"
+      fi
+
+      # Check for untracked files.
+      if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+        s="${6}×"
+      fi
+
+    fi
+
+
+    # Get the short symbolic ref.
+    # If HEAD isn’t a symbolic ref, get the short SHA for the latest commit
+    # Otherwise, just give up.
+    branchName="$(git symbolic-ref --quiet --short HEAD 2>/dev/null ||
+      git rev-parse --short HEAD 2>/dev/null ||
+      echo '(unknown)')"
+
+    aheadBehind="$(git rev-list --left-right --count origin/"$branchName"..."$branchName" 2>/dev/null | awk '$2 > 0{printf " ↑"} $1>0{printf " ↓"}')"
+
+    echo -e "$(printf "\ue725") ${1}${branchName}${2}${aheadBehind}${3} ${s}"
+  else
+    return
+  fi
+}
+
+dir_chomp() {
+  if [ "$PWD" == "$HOME" ]; then
+    echo "~"
+  else
+    local ns="${PWD//_/ }"
+    local nh="${ns/#$HOME/\~}"
+    local wd="${nh%/*}"
+    local wdnhrd
+    wdnhrd=$(echo "$wd" | sed -e "s;\(/.\)[^/]*;\1;g")
+    echo "${1}$wdnhrd/${2}${ns##*/}"
+  fi
+}
+
+prompt() {
+  echo -e "» "
+}
+
+# Set the terminal title and prompt.
+PS1="\$(dir_chomp \"${gray}\" \"${light_cyan}\")${reset}"
+PS1+=" \$(prompt_git \"${light_blue}\" \"${gray}\" \"${reset}\" \"${green}\" \"${yellow}\" \"${red}\")"
+PS1+=" \$(prompt_toolversions)"
+PS1+="${reset}\n\$(prompt)"
+export PS1
+
+# PS2="${yellow}→ ${reset}"
+# export PS2

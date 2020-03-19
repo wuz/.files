@@ -1,0 +1,67 @@
+#!/bin/bash
+
+set -exo pipefail
+
+APP_NAME='classroom'
+
+if [ -z "$MONOREPO_DIR" ]; then 
+  echo "Please set up the MONOREPO_DIR environment variable in your .bashrc first."
+  exit 1
+fi
+
+SESSION='mimir-monorepo'
+WORKSPACE_DIR="$MONOREPO_DIR/$APP_NAME"
+WORKSPACE_NAME="mimir-$APP_NAME"
+
+yarn
+
+cd "$WORKSPACE_DIR/api-server"
+
+# rvm use
+bundle install
+
+rake integration:down
+rake integration:up
+rake integration:prepare
+
+start_test() {
+  rake test:down > /dev/null 2>&1
+  rake test:up > /dev/null 2>&1
+  rake test:prepare > /dev/null 2>&1
+}
+start_test & > /dev/null 2>&1
+
+if tmux ls -F "#S" | grep $SESSION; then
+  echo "Attaching to existing session."
+  tmux new-window -c "$MONOREPO_DIR/" -n "$WORKSPACE_NAME"
+else
+  echo "Creating new session."
+  tmux -2 new-session -A -d -s "$SESSION" -c "$MONOREPO_DIR/" -n "$WORKSPACE_NAME"
+fi
+
+# Classroom
+
+tmux send-keys "cd '$WORKSPACE_DIR/api-server'" C-m
+
+tmux split-window -h -c "$WORKSPACE_DIR/api-server"
+sleep 2
+tmux select-pane -t 2
+# To send a carriagre return with send-keys add C-m to the end
+# Not adding C-m to the end will type it without carriage return, leaving it sitting in the terminal
+# tmux send-keys "yarn run $APP_NAME-backend-dev" C-m
+tmux send-keys "rake integration:server" C-m
+
+tmux split-window -v -c "$WORKSPACE_DIR/frontend" 
+tmux send-keys "yarn run $APP_NAME-frontend-integration-server" C-m
+tmux split-window -v -c "$WORKSPACE_DIR/frontend" 
+tmux send-keys "yarn run $APP_NAME-socket-integration" C-m
+
+tmux select-pane -U
+tmux select-pane -U
+tmux split-window -v -c "$WORKSPACE_DIR/api-server"
+tmux send-keys "rake integration:jobs_server" C-m
+tmux select-pane -t 1
+tmux split-window -v -c "$MONOREPO_DIR"
+
+# Attach to session
+tmux -2 attach-session -t "$SESSION"

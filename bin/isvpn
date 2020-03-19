@@ -1,0 +1,6 @@
+curl nano.vpc.hackerrank.com --max-time 2 | grep 'Internal CDN' &> /dev/null
+if [ $? == 0 ]; then
+   echo "hr.vpn"
+else
+  echo "none"
+fi

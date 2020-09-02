@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "google-auth-library": "^2.0.2",
-    "googleapis": "^36.0.0",
+    "googleapis": "^39.1.0",
     "hapi": "^17.8.1",
     "home-config": "^0.1.0",
     "moment": "^2.23.0",
